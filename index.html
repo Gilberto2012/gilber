@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal MNPEF - Entropia & Ensembles (Completo)</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
+            background: #f5f0eb;
+            color: #1e2b3a;
+            padding: 2rem 1.5rem;
+        }
+        .container {
+            max-width: 1300px;
+            margin: 0 auto;
+        }
+
+        /* cabeçalho */
+        .main-header {
+            background: #1e2b3a;
+            color: #f0eae3;
+            padding: 1.8rem 2rem;
+            border-radius: 2rem 2rem 1rem 1rem;
+            box-shadow: 0 12px 30px rgba(0,0,0,0.25);
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2.5rem;
+        }
+        .main-header h1 {
+            font-weight: 500;
+            font-size: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .main-header h1 i {
+            color: #d4b48c;
+        }
+        .badge-unb {
+            background: #d4b48c;
+            color: #1e2b3a;
+            padding: 0.4rem 1.4rem;
+            border-radius: 40px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        /* menu de abas */
+        .tab-menu {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+            border-bottom: 3px solid #d4b48c;
+            padding-bottom: 0.2rem;
+        }
+        .tab-btn {
+            background: #e8e0d8;
+            border: none;
+            padding: 0.8rem 1.6rem;
+            border-radius: 2rem 2rem 0 0;
+            font-weight: 600;
+            color: #3d2f23;
+            cursor: pointer;
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 1rem;
+        }
+        .tab-btn i {
+            font-size: 1.1rem;
+        }
+        .tab-btn:hover {
+            background: #d6cbbc;
+        }
+        .tab-btn.active {
+            background: #1e2b3a;
+            color: #f0eae3;
+        }
+        .tab-btn.jogo-tab {
+            background: #8b6f50;
+            color: white;
+        }
+        .tab-btn.jogo-tab.active {
+            background: #1e2b3a;
+            color: #f0eae3;
+        }
+
+        /* conteúdo das abas */
+        .tab-content {
+            display: none;
+            background: #fffbf7;
+            border-radius: 2rem;
+            padding: 2rem 2.2rem;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.06);
+            border: 1px solid #e5d8cc;
+            animation: fadeIn 0.2s ease;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0.3; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* estilos internos */
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 500;
+            margin: 1.8rem 0 1rem;
+            border-bottom: 2px solid #e5d8cc;
+            padding-bottom: 0.5rem;
+        }
+        .section-title i {
+            color: #8b6f50;
+            width: 2rem;
+        }
+
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.8rem;
+            margin-top: 1.2rem;
+        }
+        .card-item {
+            background: #f9f5f0;
+            border-radius: 1.5rem;
+            padding: 1.5rem;
+            border-left: 6px solid #d4b48c;
+        }
+        .card-item h3 {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 500;
+            margin-bottom: 0.8rem;
+        }
+        .card-item h3 i {
+            color: #8b6f50;
+            width: 1.8rem;
+        }
+
+        .highlight-box {
+            background: #f2ede7;
+            padding: 0.8rem 1.2rem;
+            border-radius: 1.2rem;
+            margin: 1rem 0;
+            border-left: 5px solid #d4b48c;
+        }
+        .formula {
+            background: #f9f5f0;
+            padding: 0.6rem 1rem;
+            border-radius: 1rem;
+            font-family: 'Courier New', monospace;
+            font-size: 1.05rem;
+            text-align: center;
+            margin: 0.8rem 0;
+            border: 1px solid #e5d8cc;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+            margin: 1rem 0;
+        }
+        th, td {
+            border: 1px solid #d6cbbc;
+            padding: 0.5rem 0.3rem;
+            text-align: center;
+        }
+        th {
+            background: #e5d8cc;
+            font-weight: 600;
+        }
+        .exercicios {
+            background: #f4efe9;
+            border-radius: 1.5rem;
+            padding: 1.2rem 1.5rem;
+            margin-top: 1.5rem;
+        }
+        .exercicios li {
+            list-style: none;
+            margin: 0.6rem 0;
+            padding-left: 1.8rem;
+            position: relative;
+        }
+        .exercicios li::before {
+            content: "▹";
+            position: absolute;
+            left: 0;
+            color: #8b6f50;
+            font-weight: bold;
+        }
+        .gabarito {
+            background: #d9e1e8;
+            border-radius: 1.2rem;
+            padding: 0.8rem 1.2rem;
+            margin: 1.2rem 0;
+        }
+
+        .btn-jogo {
+            display: inline-block;
+            background: #1e2b3a;
+            color: #f0eae3;
+            padding: 0.7rem 2rem;
+            border-radius: 3rem;
+            font-weight: 600;
+            text-decoration: none;
+            margin-top: 0.8rem;
+            transition: 0.15s;
+            border: 1px solid #d4b48c;
+        }
+        .btn-jogo i {
+            margin-right: 10px;
+        }
+        .btn-jogo:hover {
+            background: #d4b48c;
+            color: #1e2b3a;
+            border-color: #1e2b3a;
+        }
+
+        .game-embed {
+            margin: 1.5rem 0;
+            border-radius: 1.5rem;
+            overflow: hidden;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.1);
+        }
+        .game-embed iframe {
+            width: 100%;
+            height: 600px;
+            border: none;
+            display: block;
+        }
+
+        .regras-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1.2rem;
+            margin: 1.2rem 0;
+        }
+        .regra-item {
+            background: #f2ede7;
+            padding: 1.2rem;
+            border-radius: 1.2rem;
+            border-top: 4px solid #8b6f50;
+        }
+        .regra-item h4 {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-note {
+            text-align: center;
+            margin-top: 3rem;
+            font-size: 0.9rem;
+            color: #4b3f34;
+            border-top: 1px solid #d6cbbc;
+            padding-top: 1.8rem;
+        }
+
+        @media (max-width: 700px) {
+            .main-header {
+                flex-direction: column;
+                align-items: start;
+                gap: 10px;
+            }
+            .tab-btn {
+                padding: 0.6rem 1.2rem;
+                font-size: 0.9rem;
+            }
+            .game-embed iframe {
+                height: 450px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+
+    <header class="main-header">
+        <h1><i class="fas fa-dice-d6"></i> Entropia & Ensembles</h1>
+        <div class="badge-unb"><i class="fas fa-university"></i> MNPEF · UnB</div>
+    </header>
+
+    <!-- menu de abas -->
+    <div class="tab-menu">
+        <button class="tab-btn active" data-tab="basico"><i class="fas fa-seedling"></i> Básico</button>
+        <button class="tab-btn" data-tab="intermediario"><i class="fas fa-cogs"></i> Intermediário</button>
+        <button class="tab-btn" data-tab="avancado"><i class="fas fa-chart-line"></i> Avançado</button>
+        <button class="tab-btn" data-tab="mestrado"><i class="fas fa-graduation-cap"></i> Mestrado</button>
+        <button class="tab-btn jogo-tab" data-tab="jogo"><i class="fas fa-gamepad"></i> Jogo & Regras</button>
+    </div>
+
+    <!-- =========== NÍVEL BÁSICO =========== -->
+    <div id="basico" class="tab-content active">
+        <h2><i class="fas fa-seedling" style="color:#8b6f50;"></i> Nível Básico - Fundamentos</h2>
+        <p>A termodinâmica é a área da física que estuda as transformações de energia, especialmente as relações entre calor, trabalho e temperatura. Ela é essencial para entender desde o funcionamento de motores até o comportamento de materiais.</p>
+
+        <div class="section-title"><i class="fas fa-fire"></i> 2ª Lei da Termodinâmica</div>
+        <div class="highlight-box">
+            <strong>“A entropia de um sistema isolado sempre aumenta (ou permanece constante em processos reversíveis).”</strong>
+        </div>
+        <div class="card-grid">
+            <div class="card-item">
+                <h3><i class="fas fa-arrow-right"></i> Significado</h3>
+                <ul style="padding-left:1.2rem;">
+                    <li>Processos naturais são irreversíveis</li>
+                    <li>A desordem do universo aumenta</li>
+                    <li>Calor flui do quente para o frio</li>
+                    <li>Nenhuma máquina é 100% eficiente</li>
+                </ul>
+            </div>
+            <div class="card-item">
+                <h3><i class="fas fa-list"></i> Exemplos cotidianos</h3>
+                <ul style="padding-left:1.2rem;">
+                    <li>Gelo derretendo → entropia aumenta</li>
+                    <li>Café esfriando → entropia aumenta</li>
+                    <li>Misturar cores → entropia aumenta</li>
+                    <li>Fumaça se espalhando → entropia aumenta</li>
+                </ul>
+            </div>
+        </div>
+        <div class="formula">\(\Delta S = \dfrac{Q_{\text{rev}}}{T}\)</div>
+        <p><strong>Onde:</strong> \(\Delta S\) = variação de entropia (J/K), \(Q_{\text{rev}}\) = calor trocado reversivelmente (J), \(T\) = temperatura absoluta (K).</p>
+        <p><strong>Exemplo:</strong> Um sistema recebe 800 J de calor reversivelmente a 400 K. \(\Delta S = 800/400 = 2,0 \, J/K\).</p>
+
+        <div class="section-title"><i class="fas fa-snowflake"></i> 3ª Lei da Termodinâmica</div>
+        <div class="highlight-box">
+            <strong>“Quando a temperatura se aproxima do zero absoluto (0 K), a entropia de um cristal perfeito tende a zero.”</strong>
+        </div>
+        <div class="card-grid">
+            <div class="card-item">
+                <h3><i class="fas fa-thermometer-half"></i> Zero absoluto</h3>
+                <ul style="padding-left:1.2rem;">
+                    <li>−273,15 °C / −459,67 °F</li>
+                    <li>Nunca foi atingido experimentalmente</li>
+                    <li>É uma idealização matemática</li>
+                </ul>
+            </div>
+            <div class="card-item">
+                <h3><i class="fas fa-gem"></i> Cristal perfeito</h3>
+                <ul style="padding-left:1.2rem;">
+                    <li>Estrutura perfeitamente organizada</li>
+                    <li>Sem defeitos ou impurezas</li>
+                    <li>Entropia = 0 (máxima ordem)</li>
+                </ul>
+            </div>
+        </div>
+        <p><strong>Importância:</strong> A 3ª Lei define um limite inferior para a temperatura, é fundamental para a mecânica quântica e explica o comportamento de materiais em baixas temperaturas, sendo a base para a refrigeração.</p>
+
+        <div class="section-title"><i class="fas fa-chart-simple"></i> Máquina de Carnot</div>
+        <p>A máquina de Carnot é um modelo teórico que opera entre duas fontes de calor e atinge a máxima eficiência possível.</p>
+        <div class="formula">\(\eta = 1 - \dfrac{T_f}{T_q}\)</div>
+        <p><strong>Exemplo:</strong> Máquina entre 600 K e 300 K: \(\eta = 1 - 300/600 = 0,5 = 50\%\). Nenhuma máquina real pode superar essa eficiência.</p>
+
+        <div class="exercicios">
+            <p><i class="fas fa-pencil-alt"></i> <strong>Exercícios - Nível Básico</strong></p>
+            <ul>
+                <li><strong>1.</strong> O que afirma a 2ª Lei para um sistema isolado? (A) A entropia nunca diminui (B) A energia total se conserva (C) A temperatura permanece constante (D) O trabalho é sempre positivo</li>
+                <li><strong>2.</strong> O que ocorre com a entropia de um cristal perfeito quando \(T \to 0\) K? (A) Tende a zero (B) Tende ao infinito (C) Permanece constante (D) Oscila</li>
+                <li><strong>3.</strong> Um sistema recebe 600 J de calor reversivelmente a 300 K. Qual a variação de entropia? (A) 2,0 J/K (B) 0,5 J/K (C) 4,0 J/K (D) 8,0 J/K</li>
+                <li><strong>4.</strong> Uma máquina térmica opera entre 500 K e 250 K. Qual sua eficiência máxima? (A) 25% (B) 50% (C) 75% (D) 100%</li>
+            </ul>
+            <div class="gabarito"><i class="fas fa-check-circle"></i> Gabarito: 1-A, 2-A, 3-A, 4-B</div>
+        </div>
+    </div>
+
+    <!-- =========== NÍVEL INTERMEDIÁRIO =========== -->
+    <div id="intermediario" class="tab-content">
+        <h2><i class="fas fa-cogs" style="color:#8b6f50;"></i> Nível Intermediário - Ciclos e Cálculos</h2>
+        <p>Este nível aprofunda o estudo de processos termodinâmicos, ciclos e o cálculo de entropia em diferentes situações.</p>
+
+        <div class="section-title"><i class="fas fa-sync-alt"></i> Ciclo de Carnot</div>
+        <div class="card-grid">
+            <div class="card-item">
+                <h3><i class="fas fa-arrow-right"></i> Processos</h3>
+                <ol style="padding-left:1.5rem;">
+                    <li>Expansão isotérmica → \(Q_q\) absorvido</li>
+                    <li>Expansão adiabática → \(T\) diminui</li>
+                    <li>Compressão isotérmica → \(Q_f\) rejeitado</li>
+                    <li>Compressão adiabática → \(T\) aumenta</li>
+                </ol>
+            </div>
+            <div class="card-item">
+                <h3><i class="fas fa-percent"></i> Eficiência</h3>
+                <p>\(\eta = 1 - \dfrac{T_f}{T_q} = \dfrac{T_q - T_f}{T_q}\)</p>
+                <p><strong>Exemplo:</strong> \(T_q = 800 K\), \(T_f = 400 K\) → \(\eta = 50\%\)</p>
+                <p><strong>Importante:</strong> \(\eta_{\text{real}} < \eta_{\text{Carnot}}\) sempre.</p>
+            </div>
+        </div>
+
+        <div class="section-title"><i class="fas fa-calculator"></i> Cálculo de Entropia</div>
+        <div class="card-grid">
+            <div class="card-item">
+                <h3><i class="fas fa-chart-line"></i> Processo isotérmico</h3>
+                <p>\(\Delta S = nR \ln\left(\dfrac{V_2}{V_1}\right)\)</p>
+                <p><strong>Exemplo:</strong> 3 mol, 5 L → 15 L, 300 K:</p>
+                <p>\(\Delta S = 3 \times 8,31 \times \ln(3) = 27,4 \, J/K\)</p>
+            </div>
+            <div class="card-item">
+                <h3><i class="fas fa-chart-simple"></i> Processo isocórico</h3>
+                <p>\(\Delta S = nC_V \ln\left(\dfrac{T_2}{T_1}\right)\)</p>
+                <p><strong>Exemplo:</strong> 2 mol, \(C_V = 20,8\), 300 K → 600 K:</p>
+                <p>\(\Delta S = 2 \times 20,8 \times \ln(2) = 28,8 \, J/K\)</p>
+            </div>
+            <div class="card-item">
+                <h3><i class="fas fa-arrow-up"></i> Processo isobárico</h3>
+                <p>\(\Delta S = nC_P \ln\left(\dfrac{T_2}{T_1}\right)\)</p>
+                <p><strong>Exemplo:</strong> 2 mol, \(C_P = 29,1\), 300 K → 600 K:</p>
+                <p>\(\Delta S = 2 \times 29,1 \times \ln(2) = 40,3 \, J/K\)</p>
+            </div>
+        </div>
+
+        <div class="section-title"><i class="fas fa-exclamation-triangle"></i> Desigualdade de Clausius</div>
+        <div class="highlight-box">
+            \(\oint \frac{dQ}{T} \le 0\) — A igualdade vale para processos reversíveis, a desigualdade para irreversíveis.
+        </div>
+        <p><strong>Consequências:</strong></p>
+        <ul style="padding-left:1.5rem;">
+            <li>Processos naturais são irreversíveis</li>
+            <li>A entropia do universo sempre aumenta</li>
+            <li>Máquinas térmicas têm limite máximo de eficiência</li>
+        </ul>
+
+        <div class="exercicios">
+            <p><i class="fas fa-pencil-alt"></i> <strong>Exercícios - Nível Intermediário</strong></p>
+            <ul>
+                <li><strong>1.</strong> Máquina térmica entre 900 K e 300 K → eficiência máxima? (A) 33,3% (B) 66,7% (C) 50% (D) 75%</li>
+                <li><strong>2.</strong> 4 mol de gás ideal expandem isotermicamente de 2 L para 8 L a 400 K. (R=8,31) ΔS? (A) 46,1 J/K (B) 23,0 J/K (C) 92,2 J/K (D) 11,5 J/K</li>
+                <li><strong>3.</strong> Refrigerador tem COP=4,5 e remove 900 J da fonte fria. Qual o trabalho necessário? (A) 100 J (B) 200 J (C) 300 J (D) 400 J</li>
+                <li><strong>4.</strong> 5 mol de gás (C_P = 29,1) são aquecidos de 200 K a 800 K a pressão constante. ΔS ≈ ? (A) 202 J/K (B) 101 J/K (C) 50 J/K (D) 25 J/K</li>
+            </ul>
+            <div class="gabarito"><i class="fas fa-check-circle"></i> Gabarito: 1-B, 2-A, 3-B, 4-A</div>
+        </div>
+    </div>
+
+    <!-- =========== NÍVEL AVANÇADO =========== -->
+    <div id="avancado" class="tab-content">
+        <h2><i class="fas fa-chart-line" style="color:#8b6f50;"></i> Nível Avançado - Potenciais, Maxwell e Boltzmann</h2>
+        <p>Este nível conecta a termodinâmica clássica à mecânica estatística, explorando os potenciais termodinâmicos, as relações de Maxwell e a entropia de Boltzmann.</p>
+
+        <div class="section-title"><i class="fas fa-bolt"></i> Potenciais Termodinâmicos</div>
+        <div class="card-grid">
+            <div class="card-item">
+                <h3><i class="fas fa-bolt"></i> Energia interna</h3>
+                <p>\(U = U(S,V)\)</p>
+                <p>\(dU = TdS - PdV\)</p>
+                <p>Energia total do sistema</p>
+            </div>
+            <div class="card-item">
+                <h3><i class="fas fa-fire"></i> Entalpia</h3>
+                <p>\(H = U + PV\)</p>
+                <p>\(dH = TdS + VdP\)</p>
+                <p>Energia + trabalho de expansão</p>
+            </div>
+            <div class="card-item">
+                <h3><i class="fas fa-snowflake"></i> Helmholtz</h3>
+                <p>\(F = U - TS\)</p>
+                <p>\(dF = -SdT - PdV\)</p>
+                <p>Trabalho máximo a \(T\) constante</p>
+            </div>
+            <div class="card-item">
+                <h3><i class="fas fa-star"></i> Gibbs</h3>
+                <p>\(G = U + PV - TS\)</p>
+                <p>\(dG = -SdT + VdP\)</p>
+                <p>Trabalho máximo a \(T\) e \(P\) constantes</p>
+            </div>
+        </div>
+
+        <div class="section-title"><i class="fas fa-exchange-alt"></i> Relações de Maxwell</div>
+        <p>As relações de Maxwell são consequências da igualdade de derivadas cruzadas nos diferenciais exatos dos potenciais termodinâmicos.</p>
+        <div class="card-grid">
+            <div class="card-item">
+                <h3><i class="fas fa-arrow-right"></i> De U(S,V)</h3>
+                <p>\(\left(\frac{\partial T}{\partial V}\right)_S = -\left(\frac{\partial P}{\partial S}\right)_V\)</p>
+            </div>
+            <div class="card-item">
+                <h3><i class="fas fa-arrow-right"></i> De H(S,P)</h3>
+                <p>\(\left(\frac{\partial T}{\partial P}\right)_S = \left(\frac{\partial V}{\partial S}\right)_P\)</p>
+            </div>
+            <div class="card-item">
+                <h3><i class="fas fa-arrow-right"></i> De F(T,V)</h3>
+                <p>\(\left(\frac{\partial S}{\partial V}\right)_T = \left(\frac{\partial P}{\partial T}\right)_V\)</p>
+            </div>
+            <div class="card-item">
+                <h3><i class="fas fa-arrow-right"></i> De G(T,P)</h3>
+                <p>\(\left(\frac{\partial S}{\partial P}\right)_T = -\left(\frac{\partial V}{\partial T}\right)_P\)</p>
+            </div>
+        </div>
+        <div class="highlight-box">
+            <strong>Aplicações:</strong> Calcular entropia a partir de dados de P,V,T, relacionar calores específicos, determinar equações de estado e prever transições de fase.
+        </div>
+
+        <div class="section-title"><i class="fas fa-dice"></i> Entropia de Boltzmann</div>
+        <div class="formula">\(S = k_B \ln \Omega\)</div>
+        <p><strong>Onde:</strong> \(k_B = 1,38 \times 10^{-23}\) J/K (constante de Boltzmann), \(\Omega\) = número de microestados acessíveis.</p>
+        <div class="card-grid">
+            <div class="card-item">
+                <h3><i class="fas fa-brain"></i> Interpretação</h3>
+                <ul style="padding-left:1.2rem;">
+                    <li>Entropia é uma medida da desordem</li>
+                    <li>Mais microestados → maior entropia</li>
+                    <li>Estado de equilíbrio = entropia máxima</li>
+                    <li>Processos espontâneos → \(\Omega\) aumenta</li>
+                </ul>
+            </div>
+            <div class="card-item">
+                <h3><i class="fas fa-atom"></i> Exemplo: Spins</h3>
+                <ul style="padding-left:1.2rem;">
+                    <li>N = 10 spins (cima/baixo)</li>
+                    <li>\(\Omega = 2^{10} = 1024\)</li>
+                    <li>\(S = k_B \ln(1024) = 9,56 \times 10^{-23}\) J/K</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="section-title"><i class="fas fa-cubes"></i> Função de Partição</div>
+        <div class="formula">\(Z = \sum_i e^{-E_i/k_B T}\)</div>
+        <p>A função de partição contém toda a informação termodinâmica do sistema:</p>
+        <ul style="padding-left:1.5rem;">
+            <li>\(E = -\dfrac{\partial \ln Z}{\partial \beta}\) (energia)</li>
+            <li>\(F = -k_B T \ln Z\) (Helmholtz)</li>
+            <li>\(S = k_B(\ln Z + \beta E)\) (entropia)</li>
+            <li>\(P = k_B T \dfrac{\partial \ln Z}{\partial V}\) (pressão)</li>
+        </ul>
+
+        <div class="exercicios">
+            <p><i class="fas fa-pencil-alt"></i> <strong>Exercícios - Nível Avançado</strong></p>
+            <ul>
+                <li><strong>1.</strong> Qual é a relação de Maxwell obtida a partir da energia livre de Helmholtz F(T,V)? (A) \((∂S/∂V)_T = (∂P/∂T)_V\) (B) \((∂T/∂V)_S = -(∂P/∂S)_V\) (C) \((∂T/∂P)_S = (∂V/∂S)_P\) (D) \((∂S/∂P)_T = -(∂V/∂T)_P\)</li>
+                <li><strong>2.</strong> Calcule a energia livre de Helmholtz para um sistema com Z=10 e T=300 K. (A) -9,56 J (B) -19,1 J (C) -28,7 J (D) -38,2 J</li>
+                <li><strong>3.</strong> Qual ensemble é mais adequado para descrever um sistema isolado? (A) Microcanônico (B) Canônico (C) Grande-Canônico (D) Todos</li>
+                <li><strong>4.</strong> A partir da função de partição Z, como se calcula a energia interna média? (A) \(E = -∂\ln Z/∂β\) (B) \(E = ∂\ln Z/∂β\) (C) \(E = -∂Z/∂β\) (D) \(E = ∂Z/∂β\)</li>
+            </ul>
+            <div class="gabarito"><i class="fas fa-check-circle"></i> Gabarito: 1-A, 2-A, 3-A, 4-A</div>
+        </div>
+    </div>
+
+    <!-- =========== NÍVEL MESTRADO =========== -->
+    <div id="mestrado" class="tab-content">
+        <h2><i class="fas fa-graduation-cap" style="color:#8b6f50;"></i> Nível Mestrado - Callen, Gibbs-Duhem e Euler</h2>
+        <p>Este nível aborda os formalismos mais avançados da termodinâmica, baseados nas obras de Herbert Callen e Salinas.</p>
+
+        <div class="section-title"><i class="fas fa-book"></i> Relação Fundamental (Callen)</div>
+        <div class="highlight-box">
+            <strong>“A relação fundamental de um sistema termodinâmico é uma função que contém toda a informação termodinâmica do sistema.” — Callen</strong>
+        </div>
+        <div class="formula">\(S = S(U, V, N)\)</div>
+        <p><strong>Propriedades:</strong></p>
+        <ul style="padding-left:1.5rem;">
+            <li>Prediz todo o comportamento do sistema</li>
+            <li>Contém toda a informação termodinâmica</li>
+            <li>É uma função homogênea de primeira ordem</li>
+            <li>Define as equações de estado</li>
+        </ul>
+        <p><strong>Exemplo (gás ideal monoatômico):</strong></p>
+        <p>\(S = Nk_B \left[ \ln\left(\dfrac{V}{N}\right) + \dfrac{3}{2} \ln\left(\dfrac{U}{N}\right) + C \right]\)</p>
+        <p>\(\dfrac{1}{T} = \left(\dfrac{\partial S}{\partial U}\right)_{V,N}\), \(\dfrac{P}{T} = \left(\dfrac{\partial S}{\partial V}\right)_{U,N}\)</p>
+
+        <div class="section-title"><i class="fas fa-link"></i> Equação de Gibbs-Duhem</div>
+        <div class="formula">\(S dT - V dP + N d\mu = 0\)</div>
+        <div class="card-grid">
+            <div class="card-item">
+                <h3><i class="fas fa-arrow-right"></i> Consequências</h3>
+                <ul style="padding-left:1.2rem;">
+                    <li>Nem todas as variáveis intensivas são independentes</li>
+                    <li>Para 1 componente, apenas 2 variáveis intensivas são independentes</li>
+                    <li>Fundamental para o equilíbrio de fases</li>
+                    <li>Base para a regra das fases de Gibbs</li>
+                </ul>
+            </div>
+            <div class="card-item">
+                <h3><i class="fas fa-cog"></i> Forma alternativa</h3>
+                <p>\(d\mu = -S_m dT + V_m dP\)</p>
+                <p>\(S_m = S/N\) (entropia molar)</p>
+                <p>\(V_m = V/N\) (volume molar)</p>
+                <p>O potencial químico é função de \(T\) e \(P\).</p>
+            </div>
+        </div>
+
+        <div class="section-title"><i class="fas fa-equals"></i> Relação de Euler</div>
+        <div class="formula">\(U = TS - PV + \mu N\)</div>
+        <p><strong>Verificação:</strong> A energia interna é uma função homogênea de primeira ordem em suas variáveis extensivas: \(U(\lambda S, \lambda V, \lambda N) = \lambda U(S, V, N)\).</p>
+        <div class="card-grid">
+            <div class="card-item">
+                <h3><i class="fas fa-arrow-right"></i> Formas alternativas</h3>
+                <ul style="padding-left:1.2rem;">
+                    <li>\(H = TS + \mu N\) (entalpia)</li>
+                    <li>\(F = -PV + \mu N\) (Helmholtz)</li>
+                    <li>\(G = \mu N\) (Gibbs) → proporcional a \(N\)!</li>
+                </ul>
+            </div>
+            <div class="card-item">
+                <h3><i class="fas fa-check"></i> Exemplo: Gás ideal</h3>
+                <ul style="padding-left:1.2rem;">
+                    <li>\(U = \frac{3}{2} N k_B T\)</li>
+                    <li>\(PV = N k_B T\)</li>
+                    <li>\(\mu = k_B T \ln(N/V) + \mu_0\)</li>
+                    <li>\(TS - PV + \mu N = U\) ✓</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="section-title"><i class="fas fa-arrows-rotate"></i> Transformadas de Legendre</div>
+        <p>“A transformada de Legendre permite mudar o conjunto de variáveis independentes sem perder informação.”</p>
+        <table>
+            <tr><th>Potencial</th><th>Transformada</th><th>Variáveis</th></tr>
+            <tr><td>U(S,V)</td><td>—</td><td>S, V</td></tr>
+            <tr><td>H(S,P)</td><td>U + PV</td><td>S, P</td></tr>
+            <tr><td>F(T,V)</td><td>U - TS</td><td>T, V</td></tr>
+            <tr><td>G(T,P)</td><td>U + PV - TS</td><td>T, P</td></tr>
+            <tr><td>Ω(T,V,μ)</td><td>F - μN</td><td>T, V, μ</td></tr>
+        </table>
+
+        <div class="exercicios">
+            <p><i class="fas fa-pencil-alt"></i> <strong>Exercícios - Nível Mestrado</strong></p>
+            <ul>
+                <li><strong>1.</strong> Qual é a 'relação fundamental' de um sistema termodinâmico segundo Callen? (A) Uma função que contém toda a informação termodinâmica (B) A equação de estado PV=nRT (C) A primeira lei da termodinâmica (D) A desigualdade de Clausius</li>
+                <li><strong>2.</strong> A equação de Gibbs-Duhem relaciona: (A) \(S dT - V dP + N d\mu = 0\) (B) \(dU = TdS - PdV\) (C) \(dF = -SdT - PdV\) (D) \(dG = -SdT + VdP\)</li>
+                <li><strong>3.</strong> A relação de Euler para a energia interna é: (A) \(U = TS - PV + \mu N\) (B) \(U = TS + PV + \mu N\) (C) \(U = TS - PV - \mu N\) (D) \(U = -TS + PV + \mu N\)</li>
+                <li><strong>4.</strong> A transformada de Legendre de U(S,V) em relação a S produz: (A) F(T,V) = U - TS (B) H(S,P) = U + PV (C) G(T,P) = U + PV - TS (D) Ω(T,V,μ) = F - μN</li>
+            </ul>
+            <div class="gabarito"><i class="fas fa-check-circle"></i> Gabarito: 1-A, 2-A, 3-A, 4-A</div>
+        </div>
+    </div>
+
+    <!-- =========== JOGO E REGRAS =========== -->
+    <div id="jogo" class="tab-content">
+        <h2><i class="fas fa-gamepad" style="color:#8b6f50;"></i> Jogo "Entropia & Ensembles"</h2>
+        <p style="font-size: 1.1rem; margin-bottom: 0.5rem;">
+            <i class="fas fa-dice-d6"></i> Tabuleiro digital para 2 jogadores · 4 níveis de dificuldade · perguntas dinâmicas sobre 2ª e 3ª Leis.
+        </p>
+
+        <!-- Botão para abrir em nova aba com o link atualizado -->
+        <a href="https://sprightly-stroopwafel-4e9db3.netlify.app/" target="_blank" class="btn-jogo" style="margin-bottom: 1.5rem; display: inline-block;">
+            <i class="fas fa-external-link-alt"></i> Abrir jogo em nova aba
+        </a>
+
+        <!-- Embed do jogo com o link atualizado -->
+        <div class="game-embed">
+            <iframe src="https://sprightly-stroopwafel-4e9db3.netlify.app/" title="Jogo Entropia & Ensembles"></iframe>
+        </div>
+
+        <!-- ===== MANUAL DO JOGO (REGRAS DETALHADAS) ===== -->
+        <div style="margin-top: 2rem; background: #f2ede7; border-radius: 2rem; padding: 2rem;">
+            <h3 style="display: flex; align-items: center; gap: 12px; margin-bottom: 1.2rem;">
+                <i class="fas fa-book-open" style="color:#8b6f50;"></i> Manual do Jogo — Regras Detalhadas
+            </h3>
+
+            <div class="regras-grid">
+                <div class="regra-item">
+                    <h4><i class="fas fa-users"></i> 1. Jogadores</h4>
+                    <p>O jogo é para <strong>2 jogadores</strong>. Cada um controla um pesquisador (🔬 e 📐) que avança no tabuleiro respondendo perguntas sobre termodinâmica.</p>
+                </div>
+                <div class="regra-item">
+                    <h4><i class="fas fa-dice"></i> 2. Turno</h4>
+                    <p>Em cada turno, o jogador <strong>lança um dado</strong> (⚀) e avança o número de casas correspondente. O jogo alterna automaticamente entre os jogadores.</p>
+                </div>
+                <div class="regra-item">
+                    <h4><i class="fas fa-question-circle"></i> 3. Perguntas</h4>
+                    <p>Ao cair em uma casa de pergunta, o jogador recebe uma questão <strong>sobre o nível atual</strong> (Básico, Intermediário, Avançado ou Mestrado). Se acertar, ganha ⭐ pontos.</p>
+                </div>
+                <div class="regra-item">
+                    <h4><i class="fas fa-star"></i> 4. Pontuação</h4>
+                    <p>Cada pergunta correta vale <strong>1 ponto</strong>. O jogador com mais pontos ao final vence. As casas de bônus (⭐) concedem pontos extras.</p>
+                </div>
+                <div class="regra-item">
+                    <h4><i class="fas fa-flag-checkered"></i> 5. Defesa</h4>
+                    <p>O objetivo é chegar à casa <strong>🎓 DEFESA</strong>. O primeiro jogador que chegar ou ultrapassar essa casa vence a partida, desde que tenha respondido corretamente à pergunta final.</p>
+                </div>
+                <div class="regra-item">
+                    <h4><i class="fas fa-sync-alt"></i> 6. Níveis</h4>
+                    <p>O jogo possui <strong>4 níveis de dificuldade</strong>, que podem ser selecionados no início. As perguntas se adaptam ao nível escolhido.</p>
+                </div>
+                <div class="regra-item">
+                    <h4><i class="fas fa-shield-alt"></i> 7. Casas especiais</h4>
+                    <ul style="padding-left:1.2rem; margin-top:0.3rem;">
+                        <li><strong>🌀 Ação:</strong> Efeito aleatório (avançar, retroceder ou ganhar ponto).</li>
+                        <li><strong>🧮 Carnot:</strong> Desafio de cálculo sobre eficiência.</li>
+                        <li><strong>⚠️ Cilada:</strong> Perde um turno ou ponto.</li>
+                        <li><strong>📚 Pesquisa:</strong> Ganha um ponto extra.</li>
+                        <li><strong>⭐ Bônus:</strong> Ponto extra imediato.</li>
+                    </ul>
+                </div>
+                <div class="regra-item">
+                    <h4><i class="fas fa-sync-alt"></i> 8. Atualização</h4>
+                    <p>O banco de perguntas é <strong>dinâmico</strong> — a cada partida, as questões são carregadas de uma base que combina os materiais do MNPEF, garantindo variedade.</p>
+                </div>
+            </div>
+
+            <div class="highlight-box" style="margin-top: 1.5rem;">
+                <i class="fas fa-lightbulb" style="color:#d4b48c;"></i>
+                <strong>Dica:</strong> O jogo foi projetado para ser usado como ferramenta de estudo. Recomenda-se jogar após revisar o material do nível correspondente. Os quatro níveis do jogo seguem exatamente a progressão dos materiais deste portal.
+            </div>
+        </div>
+
+        <!-- pequeno resumo do jogo -->
+        <div style="display: flex; flex-wrap: wrap; gap: 1rem; margin-top: 1.5rem; justify-content: center;">
+            <span style="background: #1e2b3a; color: white; padding: 0.4rem 1.2rem; border-radius: 30px;"><i class="fas fa-check"></i> 2 jogadores</span>
+            <span style="background: #1e2b3a; color: white; padding: 0.4rem 1.2rem; border-radius: 30px;"><i class="fas fa-check"></i> 4 níveis</span>
+            <span style="background: #1e2b3a; color: white; padding: 0.4rem 1.2rem; border-radius: 30px;"><i class="fas fa-check"></i> Perguntas dinâmicas</span>
+            <span style="background: #1e2b3a; color: white; padding: 0.4rem 1.2rem; border-radius: 30px;"><i class="fas fa-check"></i> Tabuleiro temático</span>
+        </div>
+    </div>
+
+    <div class="footer-note">
+        <i class="fas fa-atom"></i> Material didático para o MNPEF - Universidade de Brasília · Instituto de Física · 2026
+        <br>
+        <span style="opacity: 0.7;">“A entropia não é uma punição, é uma oportunidade de aprender!”</span>
+    </div>
+
+</div>
+
+<script>
+    (function() {
+        const tabs = document.querySelectorAll('.tab-btn');
+        const contents = document.querySelectorAll('.tab-content');
+
+        function activateTab(tabId) {
+            contents.forEach(c => c.classList.remove('active'));
+            tabs.forEach(t => t.classList.remove('active'));
+
+            const targetContent = document.getElementById(tabId);
+            if (targetContent) targetContent.classList.add('active');
+
+            const targetBtn = Array.from(tabs).find(t => t.dataset.tab === tabId);
+            if (targetBtn) targetBtn.classList.add('active');
+        }
+
+        tabs.forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                const tabId = this.dataset.tab;
+                if (tabId) activateTab(tabId);
+            });
+        });
+
+        // Verifica hash na URL
+        if (window.location.hash) {
+            const hash = window.location.hash.substring(1);
+            const validTabs = ['basico', 'intermediario', 'avancado', 'mestrado', 'jogo'];
+            if (validTabs.includes(hash)) {
+                activateTab(hash);
+            }
+        }
+    })();
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+</body>
+</html>
