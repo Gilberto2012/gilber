@@ -1,0 +1,1267 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>♾️ Entropia & Ensembles - MNPEF</title>
+    <style>
+        /* ===== RESET E BASE ===== */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
+            background: linear-gradient(145deg, #0a0f1a 0%, #1a1f2e 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .game-container {
+            max-width: 1400px;
+            width: 100%;
+            background: rgba(18, 28, 46, 0.92);
+            backdrop-filter: blur(4px);
+            border-radius: 48px;
+            padding: 30px;
+            box-shadow: 0 25px 50px -8px rgba(0, 0, 0, 0.9), inset 0 2px 4px rgba(255, 215, 0, 0.08);
+            border: 1px solid rgba(255, 215, 0, 0.12);
+        }
+
+        h1 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-align: center;
+            color: #f5e9c4;
+            text-shadow: 0 0 12px #f0b34b66, 0 4px 8px #00000055;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+        h1 small {
+            font-size: 0.9rem;
+            font-weight: 400;
+            color: #b6d0e8;
+            background: #1d3557aa;
+            padding: 4px 18px;
+            border-radius: 40px;
+            border: 1px solid #f1c40f55;
+        }
+        .badge-mestrado {
+            background: #8e44ad;
+            color: white;
+            padding: 2px 14px;
+            border-radius: 30px;
+            font-size: 0.7rem;
+            letter-spacing: 1px;
+        }
+        .badge-fisica {
+            background: #1a5276;
+            color: #85c1e9;
+            padding: 2px 10px;
+            border-radius: 30px;
+            font-size: 0.6rem;
+            letter-spacing: 0.5px;
+        }
+
+        .top-bar {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            gap: 20px;
+            margin-bottom: 24px;
+            background: #0e1f2fcc;
+            border-radius: 60px;
+            padding: 12px 24px;
+            border: 1px solid #3e5f7a;
+        }
+
+        .player-card {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            background: #1d3557;
+            padding: 6px 24px 6px 16px;
+            border-radius: 40px;
+            box-shadow: inset 0 -2px 0 #f1c40f;
+        }
+        .player-card .icon { font-size: 2.4rem; line-height: 1; }
+        .player-card .info { color: #ecf0f1; }
+        .player-card .name { font-weight: 600; font-size: 1.1rem; }
+        .player-card .pos { font-size: 0.9rem; background: #2c3e50; padding: 2px 14px; border-radius: 30px; color: #f1c40f; }
+        .player-card .score { font-size: 0.9rem; background: #2c3e50; padding: 2px 14px; border-radius: 30px; color: #2ecc71; }
+
+        .turn-indicator {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            background: #1e3a5f;
+            padding: 4px 28px 4px 20px;
+            border-radius: 60px;
+            border-left: 4px solid #f1c40f;
+        }
+        .turn-indicator .label { color: #aac7e6; font-weight: 300; }
+        .turn-indicator .player-turn { font-weight: 700; color: #f7dc6f; font-size: 1.2rem; }
+
+        .controls-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 16px;
+        }
+        .controls-group select {
+            background: #1e3f5a;
+            color: white;
+            border: 1px solid #5c7f9a;
+            padding: 8px 16px;
+            border-radius: 40px;
+            font-size: 0.9rem;
+            cursor: pointer;
+        }
+        .controls-group select:focus { outline: none; border-color: #f1c40f; }
+
+        /* ===== TABULEIRO ===== */
+        .board-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: #0d1f2e;
+            border-radius: 60px;
+            padding: 30px 20px 20px;
+            border: 1px solid #4a6a85;
+            box-shadow: inset 0 0 40px #00000055;
+            margin-bottom: 20px;
+        }
+
+        .board-grid {
+            display: grid;
+            grid-template-columns: repeat(10, 1fr);
+            gap: 6px;
+            width: 100%;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .cell {
+            background: #1f3b54;
+            aspect-ratio: 1/1;
+            border-radius: 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #d5e5f5;
+            border: 1px solid #386283;
+            transition: 0.2s;
+            position: relative;
+            box-shadow: inset 0 -4px 0 #0f1f2e;
+            padding: 4px;
+            text-align: center;
+            line-height: 1.2;
+            min-height: 60px;
+        }
+        .cell .cell-label { font-size: 0.7rem; opacity: 0.8; background: #00000044; padding: 0 6px; border-radius: 12px; }
+        .cell .cell-icon { font-size: 1.8rem; line-height: 1; margin-bottom: 2px; }
+
+        .cell-start { background: #1e6b3e; border-color: #6fcf97; }
+        .cell-end { background: #8e44ad; border-color: #bb8fce; }
+        .cell-challenge { background: #7d3c98; border-color: #bb8fce; }
+        .cell-action { background: #2e6b6b; border-color: #76d7c4; }
+        .cell-trap { background: #a04040; border-color: #f1948a; }
+        .cell-bonus { background: #b7950b; border-color: #f4d03f; }
+        .cell-normal { background: #1f3b54; }
+        .cell-research { background: #1a5276; border-color: #5dade2; }
+
+        .cell .pieces { display: flex; gap: 2px; flex-wrap: wrap; justify-content: center; margin-top: 2px; }
+        .cell .pieces span { font-size: 1.4rem; filter: drop-shadow(0 0 4px black); }
+
+        /* ===== ÁREA DE CARTAS ===== */
+        .action-area {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin: 24px 0 16px;
+            justify-content: center;
+        }
+
+        .card-box {
+            flex: 2;
+            min-width: 300px;
+            background: #172f44;
+            border-radius: 32px;
+            padding: 20px 24px;
+            border: 1px solid #4b6d88;
+            box-shadow: inset 0 2px 8px #00000066;
+        }
+        .card-box .card-title {
+            color: #f1c40f;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid #3e5f7a;
+            padding-bottom: 8px;
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
+        .card-box .card-question {
+            font-size: 1.1rem;
+            color: #ecf0f1;
+            margin: 12px 0;
+            min-height: 3.8rem;
+            line-height: 1.5;
+        }
+        .card-box .card-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 16px 0 12px;
+        }
+        .card-box .card-options button {
+            background: #1e3f5a;
+            border: 1px solid #5c7f9a;
+            color: white;
+            padding: 10px 18px;
+            border-radius: 40px;
+            font-weight: 500;
+            flex: 1 0 auto;
+            cursor: pointer;
+            transition: 0.2s;
+            text-align: left;
+        }
+        .card-box .card-options button:hover {
+            background: #2a5a7a;
+            border-color: #f1c40f;
+            transform: scale(1.02);
+        }
+        .card-box .card-options button:disabled { opacity: 0.4; pointer-events: none; }
+        .card-box .card-options button.correct { background: #27ae60; border-color: #2ecc71; }
+        .card-box .card-options button.wrong { background: #c0392b; border-color: #e74c3c; }
+
+        .card-box .feedback {
+            background: #0b1a2b;
+            border-radius: 20px;
+            padding: 12px 16px;
+            margin: 8px 0;
+            border-left: 6px solid #f1c40f;
+            color: #d5e5f5;
+            font-size: 0.95rem;
+        }
+
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 14px;
+            align-items: center;
+            justify-content: center;
+            margin: 10px 0;
+        }
+        .controls button {
+            background: #f1c40f;
+            border: none;
+            color: #1a2f44;
+            font-weight: 700;
+            padding: 12px 28px;
+            border-radius: 60px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: 0.2s;
+            box-shadow: 0 6px 0 #8e6d0b;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .controls button:active {
+            transform: translateY(4px);
+            box-shadow: 0 2px 0 #8e6d0b;
+        }
+        .controls button:disabled {
+            opacity: 0.5;
+            transform: translateY(4px);
+            box-shadow: 0 2px 0 #8e6d0b;
+            pointer-events: none;
+        }
+        .controls .dice-result {
+            font-size: 2.2rem;
+            background: #0b1a2b;
+            padding: 6px 24px;
+            border-radius: 60px;
+            border: 2px solid #f1c40f;
+            color: #f7dc6f;
+            font-weight: 700;
+            min-width: 80px;
+            text-align: center;
+        }
+        .reset-btn { background: #5d6d7e !important; box-shadow: 0 6px 0 #2c3e50 !important; color: white !important; }
+        .refresh-btn { background: #2ecc71 !important; box-shadow: 0 6px 0 #1a7a42 !important; color: white !important; }
+
+        .difficulty-badge {
+            display: inline-block;
+            padding: 2px 12px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+        .difficulty-basico { background: #2ecc71; color: #000; }
+        .difficulty-intermediario { background: #f39c12; color: #000; }
+        .difficulty-avancado { background: #e74c3c; color: #fff; }
+        .difficulty-mestrado { background: #8e44ad; color: #fff; }
+
+        .footer {
+            text-align: center;
+            color: #7f9bb3;
+            font-size: 0.8rem;
+            margin-top: 10px;
+            border-top: 1px solid #2a4a62;
+            padding-top: 14px;
+        }
+
+        /* Loading */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f1c40f;
+            border-radius: 50%;
+            border-top-color: transparent;
+            animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .update-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 4px 14px;
+            border-radius: 30px;
+            font-size: 0.8rem;
+            background: #1a2f44;
+            border: 1px solid #3e5f7a;
+        }
+        .update-status.success { border-color: #2ecc71; color: #2ecc71; }
+        .update-status.error { border-color: #e74c3c; color: #e74c3c; }
+        .update-status.loading { border-color: #f39c12; color: #f39c12; }
+
+        .filter-info {
+            font-size: 0.7rem;
+            color: #85c1e9;
+            background: #1a5276;
+            padding: 2px 12px;
+            border-radius: 20px;
+            display: inline-block;
+        }
+
+        @media (max-width: 800px) {
+            .board-grid { gap: 4px; }
+            .cell { font-size: 0.55rem; min-height: 44px; }
+            .cell .cell-icon { font-size: 1.2rem; }
+            .game-container { padding: 16px; }
+            .top-bar { flex-direction: column; align-items: stretch; gap: 10px; }
+            .turn-indicator { justify-content: center; }
+            .player-card { justify-content: center; }
+            .controls-group { justify-content: center; }
+        }
+        @media (max-width: 500px) {
+            .cell .pieces span { font-size: 1rem; }
+            .controls button { padding: 8px 16px; font-size: 0.9rem; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="game-container" id="app">
+    <h1>
+        ♾️ ENTROPIA & ENSEMBLES
+        <small>
+            <span class="badge-mestrado">🎓 MNPEF</span>
+            <span class="badge-fisica">⚛️ 2ª e 3ª Leis</span>
+        </small>
+    </h1>
+
+    <!-- TOP BAR -->
+    <div class="top-bar">
+        <div class="player-card" id="player1Card">
+            <span class="icon">🔬</span>
+            <div class="info">
+                <div class="name">Pesquisador 1</div>
+                <div class="pos">🏁 casa <span id="p1pos">0</span></div>
+                <div class="score">⭐ <span id="p1score">0</span> pts</div>
+            </div>
+        </div>
+        <div class="turn-indicator">
+            <span class="label">🎯 Vez de</span>
+            <span class="player-turn" id="turnDisplay">Pesquisador 1</span>
+        </div>
+        <div class="player-card" id="player2Card">
+            <span class="icon">📐</span>
+            <div class="info">
+                <div class="name">Pesquisador 2</div>
+                <div class="pos">🏁 casa <span id="p2pos">0</span></div>
+                <div class="score">⭐ <span id="p2score">0</span> pts</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CONTROLES -->
+    <div class="controls-group">
+        <label style="color:#b6d0e8; display:flex; align-items:center; gap:8px;">
+            📚 Nível:
+            <select id="difficultySelect">
+                <option value="basico">Básico (Conceitos)</option>
+                <option value="intermediario" selected>Intermediário (Cálculos)</option>
+                <option value="avancado">Avançado (Termo + Estatística)</option>
+                <option value="mestrado">🎓 Mestrado (Callen/Salinas)</option>
+            </select>
+        </label>
+        <button id="refreshQuestionsBtn" class="refresh-btn" style="padding:8px 20px; font-size:0.9rem;">
+            🔄 Atualizar Perguntas
+        </button>
+        <span id="questionStatus" class="update-status loading">
+            <span class="loading" style="width:14px;height:14px;"></span> Carregando...
+        </span>
+        <span class="filter-info">🔍 Filtro: Termodinâmica</span>
+    </div>
+
+    <!-- TABULEIRO -->
+    <div class="board-wrapper">
+        <div class="board-grid" id="boardGrid"></div>
+    </div>
+
+    <!-- ÁREA DE AÇÃO -->
+    <div class="action-area">
+        <div class="card-box" id="cardBox">
+            <div class="card-title">
+                <span>📜 Pergunta</span>
+                <span>
+                    <span id="cardTypeTag">---</span>
+                    <span id="cardDifficulty" class="difficulty-badge difficulty-intermediario">Intermediário</span>
+                </span>
+            </div>
+            <div class="card-question" id="questionText">Clique em "Lançar Dado" para começar</div>
+            <div class="card-options" id="optionsContainer"></div>
+            <div class="feedback" id="feedbackArea">⚡ Aguarde a pergunta...</div>
+        </div>
+    </div>
+
+    <!-- CONTROLES -->
+    <div class="controls">
+        <button id="rollBtn">🎲 Lançar Dado</button>
+        <div class="dice-result" id="diceDisplay">⚀</div>
+        <button id="resetBtn" class="reset-btn">🔄 Reiniciar Jogo</button>
+    </div>
+
+    <div class="footer">
+        ✦ 2 jogadores • Avance respondendo • Ganhe quem chegar ao final primeiro ✦
+        <br>
+        <span style="font-size:0.7rem;">
+            📚 Baseado em: Callen, Salinas, Nussenzveig • 2ª e 3ª Leis • Ensembles • Potenciais Termodinâmicos
+            <br>
+            <span id="questionCountDisplay">📚 0 perguntas carregadas</span>
+            <span style="color:#85c1e9; margin-left:12px;">🔍 Apenas perguntas sobre Termodinâmica</span>
+        </span>
+    </div>
+</div>
+
+<script>
+    // ============================================================
+    //  BANCO DE PERGUNTAS - SOMENTE TERMODINÂMICA (PORTUGUÊS)
+    //  Baseado em: Callen, Salinas, Nussenzveig
+    // ============================================================
+    const MASTER_QUESTIONS = [
+        // ============================================================
+        // NÍVEL BÁSICO - Conceitos fundamentais
+        // ============================================================
+        {
+            topic: '2ª Lei',
+            difficulty: 'basico',
+            question: 'O que afirma a 2ª Lei da Termodinâmica para um sistema isolado?',
+            options: [
+                'A entropia nunca diminui',
+                'A energia total se conserva',
+                'A temperatura permanece constante',
+                'O trabalho é sempre positivo'
+            ],
+            correct: 0,
+            explanation: '📘 A 2ª Lei estabelece que a entropia de um sistema isolado tende a aumentar (ou permanecer constante em processos reversíveis).'
+        },
+        {
+            topic: '3ª Lei',
+            difficulty: 'basico',
+            question: 'O que ocorre com a entropia de um cristal perfeito quando T → 0 K?',
+            options: [
+                'Tende a zero',
+                'Tende ao infinito',
+                'Permanece constante',
+                'Oscila indefinidamente'
+            ],
+            correct: 0,
+            explanation: '📘 3ª Lei: A entropia de um cristal perfeito tende a zero no zero absoluto (Nernst).'
+        },
+        {
+            topic: 'Entropia',
+            difficulty: 'basico',
+            question: 'Qual é a interpretação microscópica da entropia segundo Boltzmann?',
+            options: [
+                'S = k_B ln Ω',
+                'S = k_B T',
+                'S = Q/T',
+                'S = U/T'
+            ],
+            correct: 0,
+            explanation: '📘 A entropia de Boltzmann é S = k_B ln Ω, onde Ω é o número de microestados.'
+        },
+        {
+            topic: '2ª Lei',
+            difficulty: 'basico',
+            question: 'Um processo reversível é caracterizado por:',
+            options: [
+                'Entropia constante (ΔS = 0)',
+                'Entropia máxima',
+                'Entropia mínima',
+                'Trabalho máximo'
+            ],
+            correct: 0,
+            explanation: '📘 Em processos reversíveis, a entropia do sistema + vizinhança permanece constante.'
+        },
+
+        // ============================================================
+        // NÍVEL INTERMEDIÁRIO - Cálculos e aplicações
+        // ============================================================
+        {
+            topic: 'Cálculo Entrópico',
+            difficulty: 'intermediario',
+            question: 'Calcule a variação de entropia para 2 mols de gás ideal que expandem isotermicamente de 10 L para 20 L. (R = 8,31 J/mol·K)',
+            options: ['11,5 J/K', '5,76 J/K', '23,0 J/K', '2,88 J/K'],
+            correct: 0,
+            explanation: '📗 ΔS = nR ln(V₂/V₁) = 2 × 8,31 × ln(2) ≈ 11,5 J/K'
+        },
+        {
+            topic: 'Ciclo de Carnot',
+            difficulty: 'intermediario',
+            question: 'Uma máquina térmica opera entre 600 K e 300 K. Qual é sua eficiência máxima (Carnot)?',
+            options: ['50%', '33,3%', '66,7%', '75%'],
+            correct: 0,
+            explanation: '📗 η = 1 - T_fria/T_quente = 1 - 300/600 = 0,5 = 50%'
+        },
+        {
+            topic: 'Entropia',
+            difficulty: 'intermediario',
+            question: 'Um sistema recebe 800 J de calor reversivelmente a 400 K. Qual a variação de entropia?',
+            options: ['2,0 J/K', '0,5 J/K', '4,0 J/K', '8,0 J/K'],
+            correct: 0,
+            explanation: '📗 ΔS = Q_rev/T = 800/400 = 2,0 J/K'
+        },
+        {
+            topic: '2ª Lei',
+            difficulty: 'intermediario',
+            question: 'A desigualdade de Clausius estabelece que:',
+            options: ['∮ dQ/T ≤ 0', '∮ dQ/T ≥ 0', '∮ dQ/T = 0', '∮ dQ = 0'],
+            correct: 0,
+            explanation: '📗 ∮ dQ/T ≤ 0, com igualdade para processos reversíveis.'
+        },
+
+        // ============================================================
+        // NÍVEL AVANÇADO - Termodinâmica + Estatística
+        // ============================================================
+        {
+            topic: 'Potenciais',
+            difficulty: 'avancado',
+            question: 'Qual transformada de Legendre relaciona a energia interna U à energia livre de Helmholtz F?',
+            options: ['F = U - TS', 'F = U + TS', 'F = U - PV', 'F = U + PV'],
+            correct: 0,
+            explanation: '📕 A energia livre de Helmholtz é F = U - TS, obtida por transformada de Legendre em S.'
+        },
+        {
+            topic: 'Ensembles',
+            difficulty: 'avancado',
+            question: 'No ensemble canônico, a probabilidade de um estado com energia E é proporcional a:',
+            options: ['e^{-E/k_B T}', 'e^{+E/k_B T}', 'E/k_B T', 'k_B T/E'],
+            correct: 0,
+            explanation: '📕 A distribuição de Boltzmann: P(E) ∝ e^{-E/k_B T}'
+        },
+        {
+            topic: 'Potenciais',
+            difficulty: 'avancado',
+            question: 'A relação de Maxwell (∂T/∂V)_S = - (∂P/∂S)_V é obtida a partir de qual potencial?',
+            options: ['Energia interna U(S,V)', 'Entalpia H(S,P)', 'Helmholtz F(T,V)', 'Gibbs G(T,P)'],
+            correct: 0,
+            explanation: '📕 Da diferencial dU = T dS - P dV, obtém-se (∂T/∂V)_S = -(∂P/∂S)_V'
+        },
+        {
+            topic: '3ª Lei',
+            difficulty: 'avancado',
+            question: 'A 3ª Lei implica que o calor específico a volume constante C_V tende a zero quando:',
+            options: ['T → 0', 'T → ∞', 'P → 0', 'V → ∞'],
+            correct: 0,
+            explanation: '📕 Pela 3ª Lei, C_V → 0 quando T → 0, conforme o modelo de Debye.'
+        },
+
+        // ============================================================
+        // NÍVEL MESTRADO - Callen, Salinas, Nussenzveig
+        // ============================================================
+        {
+            topic: 'Termodinâmica',
+            difficulty: 'mestrado',
+            question: 'Segundo Callen, qual é a "relação fundamental" de um sistema termodinâmico?',
+            options: [
+                'Uma função que contém toda a informação termodinâmica',
+                'A equação de estado PV = nRT',
+                'A primeira lei da termodinâmica',
+                'A desigualdade de Clausius'
+            ],
+            correct: 0,
+            explanation: '📚 Callen: A relação fundamental S = S(U,V,N) contém toda a informação termodinâmica do sistema.'
+        },
+        {
+            topic: 'Ensembles',
+            difficulty: 'mestrado',
+            question: 'No ensemble microcanônico, qual grandeza é fixa?',
+            options: [
+                'Energia E, volume V e número N',
+                'Temperatura T, volume V e número N',
+                'Temperatura T, pressão P e número N',
+                'Energia E, temperatura T e volume V'
+            ],
+            correct: 0,
+            explanation: '📚 No ensemble microcanônico (E,V,N) são fixos. A entropia é S = k_B ln Ω(E,V,N).'
+        },
+        {
+            topic: 'Potenciais',
+            difficulty: 'mestrado',
+            question: 'A transformada de Legendre da energia interna U(S,V) em relação a S produz:',
+            options: [
+                'A energia livre de Helmholtz F(T,V)',
+                'A entalpia H(S,P)',
+                'O potencial de Gibbs G(T,P)',
+                'O grande potencial Ω(T,V,μ)'
+            ],
+            correct: 0,
+            explanation: '📚 A transformada de Legendre de U(S,V) em S dá F(T,V) = U - TS.'
+        },
+        {
+            topic: 'Entropia',
+            difficulty: 'mestrado',
+            question: 'A fórmula de Boltzmann S = k_B ln Ω é fundamental para:',
+            options: [
+                'Conectar a termodinâmica à mecânica estatística',
+                'Calcular a eficiência de Carnot',
+                'Determinar a lei zero',
+                'Medir a temperatura empírica'
+            ],
+            correct: 0,
+            explanation: '📚 A fórmula de Boltzmann estabelece a ponte entre a termodinâmica macroscópica e a descrição microscópica.'
+        },
+        {
+            topic: '3ª Lei',
+            difficulty: 'mestrado',
+            question: 'O teorema de Nernst (3ª Lei) afirma que a entropia de um sistema tende a um valor constante independente de parâmetros quando:',
+            options: ['T → 0 K', 'P → 0 atm', 'V → ∞', 'N → ∞'],
+            correct: 0,
+            explanation: '📚 O teorema de Nernst: S(T→0, parâmetros) → constante (zero para cristais perfeitos).'
+        },
+        {
+            topic: 'Potenciais',
+            difficulty: 'mestrado',
+            question: 'A relação de Euler para a energia interna U(S,V,N) é:',
+            options: ['U = TS - PV + μN', 'U = TS + PV + μN', 'U = TS - PV - μN', 'U = -TS + PV + μN'],
+            correct: 0,
+            explanation: '📚 U = TS - PV + μN, obtida pela homogeneidade de primeira ordem de U.'
+        },
+        {
+            topic: 'Ensembles',
+            difficulty: 'mestrado',
+            question: 'Qual é a função de partição no ensemble canônico?',
+            options: ['Z = Σ_i e^{-E_i/k_B T}', 'Z = Σ_i e^{+E_i/k_B T}', 'Z = Σ_i E_i/k_B T', 'Z = Σ_i k_B T/E_i'],
+            correct: 0,
+            explanation: '📚 Z = Σ_i e^{-E_i/k_B T}, a função de partição canônica.'
+        },
+        {
+            topic: 'Termodinâmica',
+            difficulty: 'mestrado',
+            question: 'A equação de Gibbs-Duhem relaciona:',
+            options: ['S dT - V dP + N dμ = 0', 'dU = T dS - P dV', 'dF = -S dT - P dV', 'dG = -S dT + V dP'],
+            correct: 0,
+            explanation: '📚 A equação de Gibbs-Duhem: S dT - V dP + N dμ = 0, relaciona as variações das variáveis intensivas.'
+        }
+    ];
+
+    // ============================================================
+    //  FILTRO DE PERGUNTAS - APENAS TERMODINÂMICA
+    // ============================================================
+    const TERMODINAMICA_KEYWORDS = [
+        'entropia', 'termodinâmica', 'carnot', 'clausius', 'boltzmann',
+        'gibbs', 'helmholtz', 'nernst', 'calor', 'temperatura',
+        'máquina térmica', 'refrigerador', 'ciclo', 'reversível',
+        'irreversível', 'potencial termodinâmico', 'ensemble',
+        'microcanônico', 'canônico', 'grand-canônico', 'lei zero',
+        'primeira lei', 'segunda lei', 'terceira lei', 'equação de estado',
+        'gás ideal', 'calor específico', 'debye', 'einstein', 'maxwell'
+    ];
+
+    function isThermodynamicsQuestion(text) {
+        const lowerText = text.toLowerCase();
+        // Verifica se contém pelo menos uma palavra-chave
+        const hasKeyword = TERMODINAMICA_KEYWORDS.some(keyword => 
+            lowerText.includes(keyword.toLowerCase())
+        );
+        
+        // Verifica se NÃO contém palavras de assuntos não relacionados
+        const forbiddenWords = ['falcon', 'heavy', 'rocket', 'spacex', 'nasa', 'futebol', 'filme'];
+        const hasForbidden = forbiddenWords.some(word => 
+            lowerText.includes(word.toLowerCase())
+        );
+        
+        return hasKeyword && !hasForbidden;
+    }
+
+    // ============================================================
+    //  ESTADO DO JOGO
+    // ============================================================
+    const BOARD_SIZE = 30;
+    let players = [
+        { name: 'Pesquisador 1', icon: '🔬', pos: 0, score: 0 },
+        { name: 'Pesquisador 2', icon: '📐', pos: 0, score: 0 }
+    ];
+    let currentPlayer = 0;
+    let gameState = 'ROLL';
+    let currentQuestion = null;
+    let answered = false;
+    let diceValue = 1;
+    let questionPool = [...MASTER_QUESTIONS];
+    let questionCount = questionPool.length;
+    let currentDifficulty = 'intermediario';
+    let isRefreshing = false;
+
+    // ============================================================
+    //  FUNÇÕES DE BUSCA DINÂMICA (FILTRADA PARA TERMODINÂMICA)
+    // ============================================================
+    async function fetchQuestionsFromAPI(difficulty = 'intermediario') {
+        const difficultyMap = {
+            'basico': 'easy',
+            'intermediario': 'medium',
+            'avancado': 'hard',
+            'mestrado': 'hard'
+        };
+
+        try {
+            // Tenta buscar da API OpenTrivia (categoria 17 = Science)
+            const response = await fetch(
+                `https://opentdb.com/api.php?amount=15&category=17&difficulty=${difficultyMap[difficulty] || 'medium'}&type=multiple&lang=pt`
+            );
+            
+            if (!response.ok) throw new Error('API indisponível');
+            
+            const data = await response.json();
+            
+            if (data.results && data.results.length > 0) {
+                // Filtra apenas perguntas sobre Termodinâmica
+                const filteredQuestions = data.results
+                    .filter(q => {
+                        const fullText = `${q.question} ${q.category}`;
+                        return isThermodynamicsQuestion(fullText);
+                    })
+                    .map(q => {
+                        const allOptions = [...q.incorrect_answers, q.correct_answer];
+                        const shuffled = allOptions.sort(() => Math.random() - 0.5);
+                        const correctIndex = shuffled.indexOf(q.correct_answer);
+                        
+                        return {
+                            topic: q.category || 'Termodinâmica',
+                            difficulty: difficulty,
+                            question: q.question.replace(/&quot;/g, '"').replace(/&#039;/g, "'"),
+                            options: shuffled.map(o => o.replace(/&quot;/g, '"').replace(/&#039;/g, "'")),
+                            correct: correctIndex,
+                            explanation: `📚 Fonte: ${q.category || 'OpenTrivia'} (Filtrado para Termodinâmica)`
+                        };
+                    });
+                
+                // Se não encontrou perguntas de termodinâmica, retorna null
+                if (filteredQuestions.length === 0) {
+                    console.log('⚠️ Nenhuma pergunta de Termodinâmica encontrada na API');
+                    return null;
+                }
+                
+                return filteredQuestions;
+            }
+            return null;
+        } catch (error) {
+            console.log('⚠️ API indisponível, usando banco local em português');
+            return null;
+        }
+    }
+
+    // ============================================================
+    //  GERADOR DE PERGUNTAS PERSONALIZADAS (PORTUGUÊS)
+    // ============================================================
+    function generateCustomQuestions(difficulty) {
+        const templates = {
+            'basico': [
+                {
+                    topic: '2ª Lei',
+                    difficulty: 'basico',
+                    question: 'O que é entropia do ponto de vista macroscópico?',
+                    options: [
+                        'Uma função de estado relacionada à irreversibilidade',
+                        'Uma medida de energia',
+                        'Uma propriedade que sempre diminui',
+                        'Uma grandeza que nunca varia'
+                    ],
+                    correct: 0,
+                    explanation: '✔️ Entropia é uma função de estado que mede a irreversibilidade de processos termodinâmicos.'
+                },
+                {
+                    topic: '3ª Lei',
+                    difficulty: 'basico',
+                    question: 'O que significa "zero absoluto" em termos de entropia?',
+                    options: [
+                        'É o limite inferior de temperatura onde a entropia é mínima',
+                        'É a temperatura onde a entropia é máxima',
+                        'É a temperatura onde a entropia é infinita',
+                        'É a temperatura onde a entropia oscila'
+                    ],
+                    correct: 0,
+                    explanation: '✔️ O zero absoluto (0 K) é o limite inferior de temperatura; a entropia de um cristal perfeito é zero.'
+                }
+            ],
+            'intermediario': [
+                {
+                    topic: 'Ciclo de Carnot',
+                    difficulty: 'intermediario',
+                    question: 'Qual é a eficiência máxima de uma máquina térmica que opera entre 800 K e 400 K?',
+                    options: ['50%', '25%', '75%', '100%'],
+                    correct: 0,
+                    explanation: '✔️ η = 1 - 400/800 = 0,5 = 50%'
+                },
+                {
+                    topic: 'Entropia',
+                    difficulty: 'intermediario',
+                    question: 'Calcule ΔS para 3 mols de gás que expandem isotermicamente de 5 L para 15 L. (R = 8,31)',
+                    options: ['27,4 J/K', '13,7 J/K', '41,1 J/K', '6,85 J/K'],
+                    correct: 0,
+                    explanation: '✔️ ΔS = 3 × 8,31 × ln(3) ≈ 27,4 J/K'
+                }
+            ],
+            'avancado': [
+                {
+                    topic: 'Potenciais',
+                    difficulty: 'avancado',
+                    question: 'A energia livre de Gibbs é definida como:',
+                    options: ['G = H - TS', 'G = U - TS', 'G = H + TS', 'G = U + PV'],
+                    correct: 0,
+                    explanation: '✔️ G = H - TS = U + PV - TS, útil para processos a T e P constantes.'
+                }
+            ],
+            'mestrado': [
+                {
+                    topic: 'Termodinâmica',
+                    difficulty: 'mestrado',
+                    question: 'Qual é a diferencial da entalpia H(S,P)?',
+                    options: ['dH = T dS + V dP', 'dH = T dS - V dP', 'dH = -T dS + V dP', 'dH = -T dS - V dP'],
+                    correct: 0,
+                    explanation: '📚 dH = T dS + V dP, a entalpia é natural em S e P.'
+                }
+            ]
+        };
+        return templates[difficulty] || [];
+    }
+
+    // ============================================================
+    //  ATUALIZAR PERGUNTAS - FUNÇÃO PRINCIPAL
+    // ============================================================
+    async function refreshQuestions() {
+        if (isRefreshing) return;
+        isRefreshing = true;
+        updateStatusDisplay('loading', 'Atualizando perguntas...');
+
+        const difficulty = document.getElementById('difficultySelect').value;
+        currentDifficulty = difficulty;
+
+        try {
+            // 1. Tenta buscar da API (filtrada para Termodinâmica)
+            let newQuestions = await fetchQuestionsFromAPI(difficulty);
+            
+            // 2. Se falhou ou não encontrou, usa perguntas personalizadas
+            if (!newQuestions || newQuestions.length === 0) {
+                const custom = generateCustomQuestions(difficulty);
+                const baseFiltered = MASTER_QUESTIONS.filter(q => q.difficulty === difficulty);
+                
+                const all = [...baseFiltered, ...custom];
+                const unique = all.filter((q, index, self) => 
+                    index === self.findIndex(t => t.question === q.question)
+                );
+                
+                newQuestions = unique;
+            }
+
+            // 3. Se ainda não tem perguntas, usa todas as perguntas base
+            if (!newQuestions || newQuestions.length === 0) {
+                newQuestions = MASTER_QUESTIONS;
+            }
+
+            // 4. Filtro de segurança: remove qualquer pergunta que não seja de Termodinâmica
+            newQuestions = newQuestions.filter(q => {
+                const fullText = `${q.question} ${q.topic || ''}`;
+                return isThermodynamicsQuestion(fullText);
+            });
+
+            // 5. Se depois do filtro não sobrou nada, usa o banco base
+            if (newQuestions.length === 0) {
+                newQuestions = MASTER_QUESTIONS.filter(q => q.difficulty === difficulty);
+                if (newQuestions.length === 0) newQuestions = MASTER_QUESTIONS;
+            }
+
+            // 6. Atualiza o pool
+            if (newQuestions && newQuestions.length > 0) {
+                questionPool = newQuestions;
+                questionCount = questionPool.length;
+                
+                const difficultyNames = {
+                    'basico': 'Básico',
+                    'intermediario': 'Intermediário',
+                    'avancado': 'Avançado',
+                    'mestrado': '🎓 Mestrado'
+                };
+                
+                updateStatusDisplay('success', 
+                    `✅ ${questionCount} perguntas (${difficultyNames[difficulty] || difficulty})`
+                );
+                setFeedback(`✅ ${questionCount} perguntas sobre Termodinâmica carregadas!`, '#2ecc71');
+            } else {
+                throw new Error('Nenhuma pergunta encontrada');
+            }
+        } catch (error) {
+            console.error('Erro ao atualizar perguntas:', error);
+            questionPool = questionPool.length > 0 ? questionPool : MASTER_QUESTIONS;
+            questionCount = questionPool.length;
+            updateStatusDisplay('error', `⚠️ ${questionCount} perguntas (fallback local)`);
+            setFeedback('⚠️ Usando perguntas locais sobre Termodinâmica.', '#f39c12');
+        }
+
+        document.getElementById('questionCountDisplay').textContent = `📚 ${questionCount} perguntas carregadas`;
+        isRefreshing = false;
+    }
+
+    // ============================================================
+    //  ATUALIZAR STATUS DE ATUALIZAÇÃO
+    // ============================================================
+    function updateStatusDisplay(status, message) {
+        const el = document.getElementById('questionStatus');
+        if (status === 'loading') {
+            el.className = 'update-status loading';
+            el.innerHTML = `<span class="loading" style="width:14px;height:14px;"></span> ${message}`;
+        } else if (status === 'success') {
+            el.className = 'update-status success';
+            el.innerHTML = `✅ ${message}`;
+        } else if (status === 'error') {
+            el.className = 'update-status error';
+            el.innerHTML = `⚠️ ${message}`;
+        } else {
+            el.className = 'update-status';
+            el.innerHTML = `📚 ${message}`;
+        }
+    }
+
+    // ============================================================
+    //  FUNÇÕES DO TABULEIRO
+    // ============================================================
+    function getCellType(index) {
+        if (index === 0) return 'start';
+        if (index === BOARD_SIZE - 1) return 'end';
+        if (index % 10 === 0) return 'trap';
+        if (index % 7 === 0) return 'bonus';
+        if (index % 5 === 0) return 'challenge';
+        if (index % 3 === 0) return 'action';
+        if (index % 13 === 0) return 'research';
+        return 'normal';
+    }
+
+    function getCellIcon(index) {
+        const map = {
+            'start': '🏁', 'end': '🎓', 'trap': '⚠️', 
+            'bonus': '⭐', 'challenge': '🧮', 'action': '🌀', 
+            'research': '📚', 'normal': '▫️'
+        };
+        return map[getCellType(index)] || '▫️';
+    }
+
+    function getCellLabel(index) {
+        if (index === 0) return 'INÍCIO';
+        if (index === BOARD_SIZE - 1) return 'DEFESA';
+        const map = {
+            'trap': 'Cilada', 'bonus': 'Bônus', 
+            'challenge': 'Carnot', 'action': 'Ação',
+            'research': 'Pesquisa', 'normal': `C${index}`
+        };
+        return map[getCellType(index)] || `C${index}`;
+    }
+
+    function renderBoard() {
+        const grid = document.getElementById('boardGrid');
+        grid.innerHTML = '';
+        for (let i = 0; i < BOARD_SIZE; i++) {
+            const cell = document.createElement('div');
+            cell.className = `cell cell-${getCellType(i)}`;
+            cell.id = `cell-${i}`;
+
+            const iconSpan = document.createElement('div');
+            iconSpan.className = 'cell-icon';
+            iconSpan.textContent = getCellIcon(i);
+            cell.appendChild(iconSpan);
+
+            const labelSpan = document.createElement('div');
+            labelSpan.className = 'cell-label';
+            labelSpan.textContent = getCellLabel(i);
+            cell.appendChild(labelSpan);
+
+            const piecesDiv = document.createElement('div');
+            piecesDiv.className = 'pieces';
+            piecesDiv.id = `pieces-${i}`;
+            cell.appendChild(piecesDiv);
+            grid.appendChild(cell);
+        }
+        updatePieces();
+    }
+
+    function updatePieces() {
+        for (let i = 0; i < BOARD_SIZE; i++) {
+            const el = document.getElementById(`pieces-${i}`);
+            if (el) el.innerHTML = '';
+        }
+        players.forEach((p, idx) => {
+            const pos = Math.min(p.pos, BOARD_SIZE - 1);
+            const el = document.getElementById(`pieces-${pos}`);
+            if (el) {
+                const span = document.createElement('span');
+                span.textContent = p.icon;
+                span.title = `${p.name} (${p.score} pts)`;
+                el.appendChild(span);
+            }
+        });
+        document.getElementById('p1pos').textContent = Math.min(players[0].pos, BOARD_SIZE - 1);
+        document.getElementById('p2pos').textContent = Math.min(players[1].pos, BOARD_SIZE - 1);
+        document.getElementById('p1score').textContent = players[0].score;
+        document.getElementById('p2score').textContent = players[1].score;
+        document.getElementById('turnDisplay').textContent = players[currentPlayer].name;
+    }
+
+    // ============================================================
+    //  LÓGICA DO JOGO
+    // ============================================================
+    function getQuestionsForDifficulty(difficulty) {
+        const filtered = questionPool.filter(q => q.difficulty === difficulty);
+        if (filtered.length > 0) return filtered;
+        return questionPool.length > 0 ? questionPool : MASTER_QUESTIONS;
+    }
+
+    function rollDice() {
+        if (gameState !== 'ROLL') return;
+        
+        const dice = Math.floor(Math.random() * 6) + 1;
+        diceValue = dice;
+        document.getElementById('diceDisplay').textContent = ['⚀', '⚁', '⚂', '⚃', '⚄', '⚅'][dice - 1];
+
+        const p = players[currentPlayer];
+        let newPos = p.pos + dice;
+        if (newPos >= BOARD_SIZE) newPos = BOARD_SIZE - 1;
+        p.pos = newPos;
+        updatePieces();
+
+        if (p.pos === BOARD_SIZE - 1) {
+            setFeedback(`🎓 ${p.name} completou a defesa! ${p.name} venceu! 🏆`, '#f1c40f');
+            gameState = 'FEEDBACK';
+            document.getElementById('rollBtn').disabled = true;
+            return;
+        }
+
+        const difficulty = document.getElementById('difficultySelect').value;
+        let pool = getQuestionsForDifficulty(difficulty);
+        
+        const cellType = getCellType(p.pos);
+        let filtered = pool;
+        if (cellType === 'challenge') {
+            filtered = pool.filter(q => q.topic === 'Ciclo de Carnot' || q.topic === 'Cálculo Entrópico');
+        } else if (cellType === 'bonus') {
+            filtered = pool.filter(q => q.topic === '3ª Lei' || q.difficulty === 'mestrado');
+        } else if (cellType === 'trap') {
+            filtered = pool.filter(q => q.difficulty === 'mestrado' || q.difficulty === 'avancado');
+        } else if (cellType === 'research') {
+            filtered = pool.filter(q => q.topic === 'Ensembles' || q.topic === 'Potenciais');
+        }
+        
+        if (filtered.length === 0) filtered = pool;
+        
+        const q = filtered[Math.floor(Math.random() * filtered.length)];
+        currentQuestion = q;
+        answered = false;
+        gameState = 'QUESTION';
+        showQuestion(q);
+        document.getElementById('rollBtn').disabled = true;
+    }
+
+    function showQuestion(q) {
+        document.getElementById('cardTypeTag').textContent = q.topic || 'Termodinâmica';
+        const diffNames = {
+            'basico': 'Básico',
+            'intermediario': 'Intermediário',
+            'avancado': 'Avançado',
+            'mestrado': '🎓 Mestrado'
+        };
+        document.getElementById('cardDifficulty').textContent = diffNames[q.difficulty] || q.difficulty;
+        document.getElementById('cardDifficulty').className = `difficulty-badge difficulty-${q.difficulty || 'intermediario'}`;
+        document.getElementById('questionText').textContent = q.question;
+        
+        const container = document.getElementById('optionsContainer');
+        container.innerHTML = '';
+        q.options.forEach((opt, idx) => {
+            const btn = document.createElement('button');
+            btn.textContent = opt;
+            btn.dataset.idx = idx;
+            btn.addEventListener('click', () => handleAnswer(idx));
+            container.appendChild(btn);
+        });
+        document.getElementById('feedbackArea').innerHTML = '🤔 Escolha uma opção...';
+    }
+
+    function handleAnswer(selectedIdx) {
+        if (answered || gameState !== 'QUESTION') return;
+        answered = true;
+        const q = currentQuestion;
+        const isCorrect = selectedIdx === q.correct;
+
+        const container = document.getElementById('optionsContainer');
+        const btns = container.querySelectorAll('button');
+        btns.forEach((b, i) => {
+            b.disabled = true;
+            if (i === q.correct) {
+                b.classList.add('correct');
+            } else if (i === selectedIdx && !isCorrect) {
+                b.classList.add('wrong');
+            }
+        });
+
+        const p = players[currentPlayer];
+        let feedbackMsg = isCorrect ? '✅ Correto! ' : '❌ Errado. ';
+        feedbackMsg += q.explanation || '';
+
+        const diffMultiplier = {
+            'basico': 1,
+            'intermediario': 2,
+            'avancado': 3,
+            'mestrado': 4
+        };
+        const multiplier = diffMultiplier[q.difficulty] || 1;
+        
+        let bonus = 0;
+        const cellType = getCellType(p.pos);
+
+        if (isCorrect) {
+            bonus = multiplier;
+            if (cellType === 'bonus') bonus += 1;
+            if (cellType === 'challenge') bonus += 1;
+            if (cellType === 'research') bonus += 2;
+            p.score += bonus * 10;
+            feedbackMsg += ` ➕ +${bonus} casas e ${bonus*10} pontos!`;
+        } else {
+            bonus = -multiplier;
+            if (cellType === 'trap') bonus -= 1;
+            feedbackMsg += ` 🔻 -${Math.abs(bonus)} casas.`;
+        }
+
+        let newPos = p.pos + bonus;
+        if (newPos >= BOARD_SIZE) newPos = BOARD_SIZE - 1;
+        if (newPos < 0) newPos = 0;
+        p.pos = newPos;
+        updatePieces();
+
+        if (p.pos === BOARD_SIZE - 1) {
+            feedbackMsg += ` 🎓 ${p.name} completou a defesa! Vitória!`;
+            gameState = 'FEEDBACK';
+            document.getElementById('rollBtn').disabled = true;
+        } else {
+            currentPlayer = (currentPlayer + 1) % 2;
+            gameState = 'ROLL';
+            document.getElementById('rollBtn').disabled = false;
+            document.getElementById('turnDisplay').textContent = players[currentPlayer].name;
+            updatePieces();
+        }
+
+        setFeedback(feedbackMsg, isCorrect ? '#2ecc71' : '#e74c3c');
+        btns.forEach(b => b.disabled = true);
+    }
+
+    function setFeedback(msg, color = '#d5e5f5') {
+        const el = document.getElementById('feedbackArea');
+        el.innerHTML = msg;
+        el.style.borderLeftColor = color || '#f1c40f';
+    }
+
+    // ============================================================
+    //  RESET
+    // ============================================================
+    function resetGame() {
+        players[0].pos = 0;
+        players[0].score = 0;
+        players[1].pos = 0;
+        players[1].score = 0;
+        currentPlayer = 0;
+        gameState = 'ROLL';
+        answered = false;
+        currentQuestion = null;
+        document.getElementById('rollBtn').disabled = false;
+        document.getElementById('diceDisplay').textContent = '⚀';
+        document.getElementById('questionText').textContent = 'Clique em "Lançar Dado" para começar';
+        document.getElementById('optionsContainer').innerHTML = '';
+        document.getElementById('cardTypeTag').textContent = '---';
+        document.getElementById('cardDifficulty').textContent = '---';
+        setFeedback('🔁 Jogo reiniciado! Vez do Pesquisador 1.', '#f1c40f');
+        document.getElementById('turnDisplay').textContent = players[0].name;
+        updatePieces();
+    }
+
+    // ============================================================
+    //  INICIALIZAÇÃO
+    // ============================================================
+    document.addEventListener('DOMContentLoaded', () => {
+        renderBoard();
+        
+        document.getElementById('questionCountDisplay').textContent = `📚 ${MASTER_QUESTIONS.length} perguntas carregadas`;
+        updateStatusDisplay('idle', `${MASTER_QUESTIONS.length} perguntas (Termodinâmica)`);
+        
+        document.getElementById('rollBtn').addEventListener('click', rollDice);
+        document.getElementById('resetBtn').addEventListener('click', resetGame);
+        document.getElementById('refreshQuestionsBtn').addEventListener('click', refreshQuestions);
+        
+        document.getElementById('difficultySelect').addEventListener('change', function() {
+            currentDifficulty = this.value;
+            const diffNames = {
+                'basico': 'Básico',
+                'intermediario': 'Intermediário',
+                'avancado': 'Avançado',
+                'mestrado': '🎓 Mestrado'
+            };
+            updateStatusDisplay('idle', `${questionPool.length} perguntas (${diffNames[this.value]})`);
+            setFeedback(`📊 Nível alterado para: ${diffNames[this.value]}.`, '#3498db');
+        });
+
+        setFeedback('🎯 Pronto para jogar! Lançe o dado.', '#f1c40f');
+        document.getElementById('turnDisplay').textContent = players[0].name;
+        updatePieces();
+
+        setTimeout(() => refreshQuestions(), 500);
+    });
+</script>
+</body>
+</html>
